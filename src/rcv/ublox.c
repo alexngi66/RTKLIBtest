@@ -176,45 +176,65 @@ static int ubx_sys(int gnssid)
 /* UBX SigId to signal (ref [5] 1.5.4) ---------------------------------------*/
 static int ubx_sig(int sys, int sigid)
 {
-    if (sys == SYS_GPS) {
-        if (sigid == 0) return CODE_L1C; /* L1C/A */
-        if (sigid==3) return CODE_L2L; /* L2CL */
-        if (sigid==4) return CODE_L2S; /* L2CM */
-        if (sigid==6) return CODE_L5I; /* L5I */
-        if (sigid==7) return CODE_L5Q; /* L5Q */
-    }
-    else if (sys == SYS_GLO) {
-        if (sigid == 0) return CODE_L1C; /* G1C/A (GLO L1 OF) */
-        if (sigid == 2) return CODE_L2C; /* G2C/A (GLO L2 OF) */
-    }
-    else if (sys == SYS_GAL) {
-        if (sigid==0) return CODE_L1C; /* E1C */
-        if (sigid==1) return CODE_L1B; /* E1B */
-        if (sigid==3) return CODE_L5I; /* E5aI */
-        if (sigid==4) return CODE_L5Q; /* E5aQ */
-        if (sigid==5) return CODE_L7I; /* E5bI */
-        if (sigid==6) return CODE_L7Q; /* E5bQ */
-    }
-    else if (sys == SYS_QZS) {
-        if (sigid==0) return CODE_L1C; /* L1C/A */
-        if (sigid==1) return CODE_L1Z; /* L1S */
-        if (sigid==4) return CODE_L2S; /* L2CM */
-        if (sigid==5) return CODE_L2L; /* L2CL */
-        if (sigid==8) return CODE_L5I; /* L5I */
-        if (sigid==9) return CODE_L5Q; /* L5Q */
-    }
-    else if (sys == SYS_CMP) {
-        if (sigid==0) return CODE_L2I; /* B1I D1 */
-        if (sigid==1) return CODE_L2I; /* B1I D2 */
-        if (sigid == 2) return CODE_L7I; /* B2I D1 */
-        if (sigid == 3) return CODE_L7I; /* B2I D2 */
-        if (sigid == 7) return CODE_L5X; /* B2a */
-    }
-    else if (sys == SYS_SBS) {
-        if (sigid==0) return CODE_L1C; /* L1C/A */
-    }
-    return CODE_NONE;
+	if (sys==SYS_GPS) {
+		if (sigid >= 0) {
+				trace(2,"UBX GPS sigid: %d\n",sigid);;
+			}
+		if (sigid==0) return CODE_L1C; /* L1C/A */
+		if (sigid==3) return CODE_L2L; /* L2CL */
+		if (sigid==4) return CODE_L2S; /* L2CM */
+		if (sigid==6) return CODE_L5I;
+		if (sigid==7) return CODE_L5Q;
+	}
+	else if (sys==SYS_GLO) {
+		if (sigid >= 0) {
+				trace(2,"UBX GLO sigid: %d\n",sigid);
+			}
+		if (sigid==0) return CODE_L1C; /* G1C/A (GLO L1 OF) */
+		if (sigid==2) return CODE_L2C; /* G2C/A (GLO L2 OF) */
+	}
+	else if (sys==SYS_GAL) {
+		if (sigid >= 0) {
+			trace(2,"UBX GAL sigid: %d\n",sigid);
+		}
+		if (sigid==0) return CODE_L1C; /* E1C */
+		if (sigid==1) return CODE_L1B; /* E1B */
+		if (sigid==3) return CODE_L5I; /* E5aI X20*/
+		if (sigid==4) return CODE_L5Q; /* E5aQ X20*/
+		if (sigid==5) return CODE_L7I; /* E5bI */
+		if (sigid==6) return CODE_L7Q; /* E5bQ */
+		if (sigid==8) return CODE_L6B; /* E6B X20 */
+		if (sigid==9) return CODE_L6C; /* E6C X20 */
+	}
+	else if (sys==SYS_QZS) {
+		if (sigid==0) return CODE_L1C; /* L1C/A */
+		if (sigid==1) return CODE_L1Z; /* L1S */
+		if (sigid==4) return CODE_L2S; /* L2CM */
+		if (sigid==5) return CODE_L2L; /* L2CL */
+		if (sigid==8) return CODE_L5I; /* L5I */
+		if (sigid==9) return CODE_L5Q; /* L5Q */
+
+	}
+	else if (sys==SYS_CMP) {
+		if (sigid >= 0) {
+			trace(2,"UBX BDS sigid: %d\n",sigid);
+		}
+		if (sigid==0) return CODE_L2I; /* B1I D1 */
+		if (sigid==1) return CODE_L2I; /* B1I D2 */
+		if (sigid==2) return CODE_L7I; /* B2I D1 */
+		if (sigid==3) return CODE_L7I; /* B2I D2 */
+		if (sigid==4) return CODE_L6I; /* B3I D1 X20 */
+		if (sigid==5) return CODE_L1P; /* B1C(P) */
+		if (sigid==6) return CODE_L1D; /* B1C(D) */
+		if (sigid==7) return CODE_L5P; /* B2a(P) */
+		if (sigid==8) return CODE_L5D; /* B2a(D) */
+	}
+	else if (sys==SYS_SBS) {
+		if (sigid==0) return CODE_L1C; /* L1C/A */
+	}
+	return CODE_NONE;
 }
+
 /* UBX SigId to signal - combine codes ------------------------*/
 static int ubx_sig_combined(int sys, int sigid)
 {
@@ -236,6 +256,8 @@ static int ubx_sig_combined(int sys, int sigid)
         if (sigid==4) return CODE_L5X; /* E5aQ */
         if (sigid==5) return CODE_L7X; /* E5bI */
         if (sigid==6) return CODE_L7X; /* E5bQ */
+        if (sigid==8) return CODE_L6X; /* E6B X20 */
+		if (sigid==9) return CODE_L6X; /* E6C X20 */
         }
     else if (sys == SYS_QZS) {
         if (sigid == 0) return CODE_L1C; /* L1C/A */
@@ -251,6 +273,10 @@ static int ubx_sig_combined(int sys, int sigid)
         if (sigid == 2) return CODE_L7I; /* B2I D1 */
         if (sigid == 3) return CODE_L7I; /* B2I D2 */
         if (sigid == 7) return CODE_L5X; /* B2a */
+        if (sigid==4) return CODE_L6I; /* B3I D1 X20 */
+		if (sigid==5) return CODE_L1P; /* B1C(P) */
+		if (sigid==6) return CODE_L1D; /* B1C(D) */
+		if (sigid==8) return CODE_L5X; /* B2a(D) */
     }
     else if (sys == SYS_SBS) {
         if (sigid==0) return CODE_L1C; /* L1C/A */

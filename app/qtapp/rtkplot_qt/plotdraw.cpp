@@ -44,10 +44,13 @@ void Plot::updateDisplay()
 
     if (flush) {
         QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
         if (buffer.size() != ui->lblDisplay->size())
             buffer = QPixmap(ui->lblDisplay->size());
-
-        if (buffer.isNull()) return;
+        if (buffer.isNull()) {
+            QGuiApplication::restoreOverrideCursor();
+            return;
+        }
         buffer.fill(plotOptDialog->getCColor(0));
 
         QPainter c(&buffer);
